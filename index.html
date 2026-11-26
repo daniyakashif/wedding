@@ -41,7 +41,8 @@ button{-webkit-tap-highlight-color:transparent}
 .back{position:fixed;top:0;left:50%;width:100%;max-width:430px;transform:translateX(-50%);height:100vh;height:100lvh;overflow:hidden;background:#907361;z-index:0;touch-action:manipulation}
 .back .floorD{position:absolute;inset:0;background:#c7b5a5;opacity:0}
 #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.walkw{position:absolute;inset:0;pointer-events:none;will-change:opacity}
+.walkw{position:absolute;inset:0;pointer-events:none;will-change:opacity;opacity:0;
+  -webkit-mask:radial-gradient(circle 34px at 65.2% 26.5%,transparent 62%,#000 100%);mask:radial-gradient(circle 34px at 65.2% 26.5%,transparent 62%,#000 100%)}
 .box{position:absolute;left:0;top:0;width:100%;height:100%}
 .walkw img,.walkw video{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:fill;-webkit-user-drag:none;pointer-events:none}
 .garden,.arch{position:absolute;inset:0;transform-origin:50% 100%;will-change:transform}
@@ -107,7 +108,8 @@ button{-webkit-tap-highlight-color:transparent}
   background:linear-gradient(180deg,rgba(10,16,44,.82),rgba(10,16,44,.72));-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);box-shadow:0 0 0 1px rgba(214,186,124,.5),0 18px 30px -18px rgba(0,0,0,.7)}
 .note .orn{display:block;width:120px;height:14px;margin:0 auto 14px;color:#d6ba7c}
 .note .orn.b{margin:18px auto 0;transform:scaleY(-1)}
-.note h3{font-family:var(--script);font-weight:400;font-size:42px;line-height:1.15;padding:.05em .1em .1em}
+.note h3{font-family:var(--script);font-weight:400;font-size:42px;line-height:1.15;padding:.05em .1em .1em;text-wrap:balance;overflow-wrap:anywhere}
+.note h3.long{font-size:34px}.note h3.xlong{font-size:28px}
 .note p{font-size:19.5px;line-height:1.5;font-style:italic;margin-top:12px}
 .note .from{font-style:normal;font-size:min(11px,2.9vw);white-space:nowrap;letter-spacing:.26em;padding-left:.26em;text-transform:uppercase;color:#e2cd9a;margin-top:20px}
 
@@ -158,14 +160,15 @@ button{-webkit-tap-highlight-color:transparent}
 
 /* the stretch where night becomes day */
 .flow .s-moon{height:105vh;height:105svh;padding:0}
-.mtip{position:absolute;left:6%;right:6%;top:44%;text-align:center;will-change:opacity;pointer-events:none;isolation:isolate}
-.mtip::before{content:"";position:absolute;left:-4%;right:-4%;top:-34%;bottom:-34%;z-index:-1;background:radial-gradient(ellipse at center,rgba(5,8,26,.8),rgba(5,8,26,.5) 50%,rgba(5,8,26,0) 78%)}
-.mtip b{display:block;font-family:var(--script);font-weight:400;font-size:min(44px,11.4vw);line-height:1.12;color:#ffe2a0;text-shadow:0 0 18px rgba(255,214,130,.45),0 2px 6px rgba(0,0,0,.9)}
-.mtip span{display:block;font-size:13px;font-weight:600;letter-spacing:.24em;padding-left:.24em;text-transform:uppercase;margin-top:10px;color:#fff3d2;text-shadow:0 1px 6px rgba(0,0,0,.95)}
+.mtip{position:absolute;left:5%;right:5%;top:43%;text-align:center;will-change:opacity;pointer-events:none}
+/* no shade behind the words: the contrast is an edge hugging each letter, so the garden stays clean */
+.mtip b{display:block;font-family:var(--script);font-weight:400;font-size:min(52px,13.4vw);line-height:1.1;color:#ffe08a;
+  -webkit-text-stroke:2.2px #24180a;paint-order:stroke fill;text-shadow:0 0 5px rgba(10,6,0,.95),0 0 11px rgba(10,6,0,.7),0 2px 3px rgba(0,0,0,.6)}
+.mtip span{display:block;font-size:14.5px;font-weight:700;letter-spacing:.24em;padding-left:.24em;text-transform:uppercase;margin-top:12px;color:#fff6dc;
+  -webkit-text-stroke:2px #24180a;paint-order:stroke fill;text-shadow:0 0 5px rgba(10,6,0,.95),0 0 9px rgba(10,6,0,.6)}
 .mtip.dayt{opacity:0}
-.mtip.dayt::before{background:radial-gradient(ellipse at center,rgba(255,250,240,.92),rgba(255,250,240,.66) 50%,rgba(255,250,240,0) 78%)}
-.mtip.dayt b{color:#c4473f;text-shadow:0 1px 0 rgba(255,255,255,.7)}
-.mtip.dayt span{color:#a33c36;text-shadow:none}
+.mtip.dayt b{color:#ee4034;-webkit-text-stroke:2.6px #fffdf6;text-shadow:0 0 5px #fffdf6,0 0 10px rgba(255,253,246,.85)}
+.mtip.dayt span{color:#cf3229;-webkit-text-stroke:2.2px #fffdf6;text-shadow:0 0 5px #fffdf6,0 0 9px rgba(255,253,246,.8)}
 
 /* last card */
 .flow .s-end{padding-top:4vh;padding-bottom:9vh}
@@ -338,13 +341,13 @@ button{-webkit-tap-highlight-color:transparent}
   var body=document.body, fxw=$('back'), hero=$('hero'), box=$('box'), walkw=$('walkw'), floorD=$('floorD'), pic=$('pic'), garden=$('garden'), arch=$('arch'), archD=$('archD'), env=$('env'), ebox=$('ebox'), film=$('film'), vid=$('vid'), walk=$('walk'), seam=$('seam'),
       day=$('day'), unlit=$('unlit'), glowWrap=$('glows'), glows=[].slice.call(glowWrap.children), 
       who=$('who'), names=$('names'), cue=$('cue'), fx=$('fx'), fxc=fx.getContext('2d'), moon=$('moon'), sun=$('sun'), mtipN=$('mtipN'), mtipD=$('mtipD'), wins=[].slice.call(document.querySelectorAll('.win'));
-  var opened=false, ready=false, dpr=1, FW=0, FH=0, VH=0, BX=0, BY=0, BW=0, BH=0, PBH=0, intro={who:0}, D=0, Z=0, mDrag=0, lit=0;
+  var opened=false, ready=false, dpr=1, FW=0, FH=0, VH=0, BX=0, BY=0, BW=0, BH=0, PBH=0, intro={who:0,pair:0}, D=0, Z=0, mDrag=0, lit=0;
   function cl(x){return x<0?0:x>1?1:x} function sm(a,b,x){x=cl((x-a)/(b-a));return x*x*(3-2*x)}
 
   /* ----- the guest's name, from ?to=Arjun on the link ----- */
   var guest='';
   try{ var m=(location.search+'&'+location.hash.replace(/^#/,'')).match(/[?&](?:to|name|guest)=([^&#]+)/i); if(m){ guest=decodeURIComponent(m[1].replace(/\+/g,' ')).replace(/[<>]/g,'').trim().slice(0,40); } }catch(e){}
-  if(guest) $('dear').textContent='Dear '+guest+',';
+  if(guest){ var dearEl=$('dear'); dearEl.textContent='Dear '+guest+','; if(guest.length>26) dearEl.classList.add('xlong'); else if(guest.length>11) dearEl.classList.add('long'); }
 
   /* ----- layout: the paintings always cover the screen at their true proportions ----- */
   function cover(el,vw,vh,r){ var w=Math.max(vw,vh*r), h=w/r; el.style.left=(vw-w)/2+'px'; el.style.top=(vh-h)/2+'px'; el.style.width=w+'px'; el.style.height=h+'px'; return [(vw-w)/2,(vh-h)/2,w,h]; }
@@ -398,16 +401,20 @@ button{-webkit-tap-highlight-color:transparent}
     mtipN.style.opacity=(near*(1-sm(.1,.6,D))).toFixed(3); mtipD.style.opacity=(near*sm(.6,1,D)).toFixed(3);
     var P=cl((y-VH*.6)/Math.max(1,docH-VH*.6)); garden.style.transform='scale('+(1+.17*P).toFixed(4)+')'; arch.style.transform='scale('+(1+.03*P).toFixed(4)+')';
     var hh=1-sm(.02,.55,y/VH);
-    walkw.style.opacity=hh.toFixed(3); unlit.style.visibility=hh<.02?'hidden':'visible';
+    walkw.style.opacity=(intro.pair*hh).toFixed(3); unlit.style.visibility=hh<.02?'hidden':'visible';
     who.style.opacity=(intro.who*(1-sm(.05,.5,y/VH))).toFixed(3); cue.style.opacity=(ready?(1-sm(.02,.2,y/VH))*.95:0).toFixed(3);
   }
   /* version one: the page waits at the picture until the moon is pulled; it lets go by itself after 8 seconds */
   var MOONLOCK=true, moonDone=false, locked=false, lockY=0, lockT=0;
-  function stop(e){ if(locked&&!moonDone&&e.cancelable) e.preventDefault(); }
+  var tY=0; document.addEventListener('touchstart',function(e){ if(e.touches&&e.touches[0]) tY=e.touches[0].clientY; },{passive:true});
+  function stop(e){ if(!locked||moonDone||!e.cancelable) return;
+    if(e.type==='wheel'){ if(e.deltaY>0) e.preventDefault(); return; }
+    if(e.touches&&e.touches[0]&&e.touches[0].clientY<tY-2) e.preventDefault(); }   /* finger moving up = page going down */
+  function unlock(){ locked=false; clearTimeout(lockT); document.removeEventListener('touchmove',stop); document.removeEventListener('wheel',stop); }
   function lockAt(py){ locked=true; lockY=Math.round(py); window.scrollTo(0,lockY); document.addEventListener('touchmove',stop,{passive:false}); document.addEventListener('wheel',stop,{passive:false});
-    lockT=setTimeout(function auto(){ if(moonDone) return; if(held){ lockT=setTimeout(auto,1500); return; } moonTo(1); },8000); }
-  function moonSet(){ if(moonDone) return; moonDone=true; locked=false; held=false; moon.classList.remove('held'); clearTimeout(lockT); mDrag=1; document.removeEventListener('touchmove',stop); document.removeEventListener('wheel',stop); apply(); }
-  function onScroll(){ if(locked&&Math.abs((window.pageYOffset||0)-lockY)>1) window.scrollTo(0,lockY); if(sTick) return; sTick=true; requestAnimationFrame(function(){ sTick=false; apply(); }); }
+    clearTimeout(lockT); lockT=setTimeout(function auto(){ if(moonDone||!locked) return; if(held){ lockT=setTimeout(auto,1500); return; } moonTo(1); },8000); }
+  function moonSet(){ if(moonDone) return; moonDone=true; held=false; moon.classList.remove('held'); mDrag=1; unlock(); apply(); }
+  function onScroll(){ if(locked){ var sy=window.pageYOffset||0; if(sy>lockY+1) window.scrollTo(0,lockY); else if(sy<lockY-24&&!held) unlock(); } if(sTick) return; sTick=true; requestAnimationFrame(function(){ sTick=false; apply(); }); }
   window.addEventListener('scroll',onScroll,{passive:true});
 
   /* ----- pulling the moon down ----- */
@@ -464,7 +471,7 @@ button{-webkit-tap-highlight-color:transparent}
   glows.forEach(function(){ lampOn.push(false); });
   function lightOne(k){ if(lampOn[k]) return; lampOn[k]=true; glows[k].classList.add('on'); lit=lampOn.filter(Boolean).length/glows.length;
     unlit.style.transition='opacity 1.8s ease'; unlit.style.opacity=(.76*(1-lit)).toFixed(3);
-    if(lit>=1&&!lampDone){ lampDone=true; setTimeout(walkIn,1400); } }
+    if(lit>=1&&!lampDone){ lampDone=true; setTimeout(walkIn,900); } }
   function cascade(){ var n=lampOn.filter(Boolean).length; if(n>=ORDER.length) return; lightOne(ORDER[n]); lightOne(ORDER[n+1]); setTimeout(cascade,520); }
   function lampsStart(){ cascade(); }
 
@@ -473,9 +480,11 @@ button{-webkit-tap-highlight-color:transparent}
   function finish(){ ready=true; body.classList.remove('locked'); apply(); }
   /* the film of us walking in; if a phone will not play it, the painting simply stays */
   /* one unhurried step from the original film, then the words */
-  function walkIn(){ var p; try{ walk.currentTime=0; walk.playbackRate=1; p=walk.play(); }catch(e){} if(p&&p.catch) p.catch(function(){});
-    glowWrap.style.opacity=0;
-    setTimeout(function(){ fade('who',1200); writeNames(); },1500); setTimeout(finish,3000); }
+  function walkIn(){ glowWrap.style.opacity=0;
+    try{ walk.pause(); walk.currentTime=0; walk.playbackRate=1; }catch(e){}
+    fade('pair',1500);   /* we fade into the lit garden, standing */
+    setTimeout(function(){ var p; try{ p=walk.play(); }catch(e){} if(p&&p.catch) p.catch(function(){}); },1650);   /* then the one step */
+    setTimeout(function(){ fade('who',1200); writeNames(); },3150); setTimeout(finish,4600); }
 
   /* ----- the bow: the film follows the finger, and loosens back if you let go ----- */
   var T0=.2, T1=1.42, TEND=3.62, prog=0, drag=false, sy=0, mv=0, animId=0, vOK=false, want=-1, playing=false, endT=0;
@@ -522,7 +531,7 @@ button{-webkit-tap-highlight-color:transparent}
   function fit(){ layout(); hearts.forEach(function(S){ if(!S.done&&!S.touched) paintHeart(S); }); apply(); }
   var rw=window.innerWidth; window.addEventListener('resize',function(){ if(window.innerWidth!==rw){ rw=window.innerWidth; fit(); } else apply(); });
   fit(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ hearts.forEach(function(S){ if(!S.done&&!S.touched) paintHeart(S); }); });
-  if(RM){ glows.forEach(function(g){ g.classList.add('on'); }); lit=1; unlit.style.opacity=0; intro.who=1; writeNames(); opened=true; env.style.display='none'; finish(); }
+  if(RM){ glows.forEach(function(g){ g.classList.add('on'); }); lit=1; unlit.style.opacity=0; intro.who=1; intro.pair=1; writeNames(); opened=true; env.style.display='none'; finish(); }
   requestAnimationFrame(loop);
 })();
 </script>

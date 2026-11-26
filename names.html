@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Name links · Daniya & Kashif</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,"Times New Roman",serif;background:#f1e9d8;color:#3c3a36;min-height:100vh;padding:28px 18px 60px;-webkit-text-size-adjust:100%}
+main{max-width:430px;margin:0 auto}
+h1{font-size:25px;font-weight:400;font-style:italic;color:#56704f;text-wrap:balance}
+p.sub{font-size:15px;line-height:1.45;color:#7b766c;margin:6px 0 22px}
+label{display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7b766c;margin:18px 0 6px}
+input,textarea{width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid #b9c4b2;border-radius:10px;background:#fffdf8;color:#3c3a36}
+input:focus,textarea:focus{outline:2px solid #7f9a78;outline-offset:1px}
+textarea{min-height:92px;resize:vertical;font-size:15px;word-break:break-all;background:#f8f3e6}
+.row{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1 1 0;min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid #6f8a68;background:#6f8a68;color:#fff;font:inherit;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:#56704f}
+.btn:active{transform:scale(.98)}
+.note{font-size:13.5px;line-height:1.45;color:#7b766c;margin-top:20px}
+#ok{font-size:14px;color:#56704f;min-height:20px;margin-top:10px}
+details{margin-top:26px;font-size:14px;color:#7b766c}
+summary{cursor:pointer;min-height:32px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Make a link with a guest's name</h1>
+  <p class="sub">Type a name and the invitation will open with "Dear &lt;name&gt;,". This page is only for the two of you; guests never see it.</p>
+
+  <label for="nm">Guest's name</label>
+  <input id="nm" type="text" autocomplete="off" autocapitalize="words" maxlength="40" placeholder="Arjun">
+
+  <label for="out">Their link</label>
+  <textarea id="out" readonly aria-label="Their personal link"></textarea>
+
+  <div class="row">
+    <button class="btn" id="copy" type="button">Copy link</button>
+    <a class="btn ghost" id="wa" target="_blank" rel="noopener" href="#">Send on WhatsApp</a>
+  </div>
+  <p id="ok" role="status" aria-live="polite"></p>
+
+  <p class="note">Leave the name empty for the plain link, which opens with "Dear friend,".</p>
+
+  <details>
+    <summary>The invitation's address</summary>
+    <label for="base">Change it only if the link above looks wrong</label>
+    <input id="base" type="url" inputmode="url" autocomplete="off">
+  </details>
+</main>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  var nm=$('nm'), out=$('out'), base=$('base'), wa=$('wa'), ok=$('ok'), b='';
+  try{ b=new URL('./',location.href).href.split('?')[0].split('#')[0]; }catch(e){ b=''; }
+  if(!/^https?:/.test(b)) b='';
+  base.value=b;
+  function link(){ var n=nm.value.replace(/[<>]/g,'').trim(), u=base.value.trim(); if(!u) return ''; return n?u+(u.indexOf('?')<0?'?':'&')+'to='+encodeURIComponent(n):u; }
+  function show(){ var l=link(); out.value=l||'Open the section below and paste the invitation\'s address first.'; wa.href=l?'https://wa.me/?text='+encodeURIComponent(l):'#'; ok.textContent=''; }
+  nm.addEventListener('input',show); base.addEventListener('input',show);
+  $('copy').addEventListener('click',function(){ var l=link(); if(!l) return;
+    function done(){ ok.textContent='Copied. Paste it into the chat and wait a few seconds for the preview before sending.'; }
+    function old(){ try{ out.focus(); out.select(); document.execCommand('copy'); done(); }catch(e){ ok.textContent='Press and hold the link to copy it.'; } }
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(l).then(done,old); else old(); });
+  wa.addEventListener('click',function(e){ if(!link()) e.preventDefault(); });
+  show();
+})();
+</script>
+</body>
+</html>

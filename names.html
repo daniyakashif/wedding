@@ -45,13 +45,16 @@ summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
 <body>
 <main>
   <h1>Send the invitations</h1>
-  <p class="sub">Fill in one guest, then tap the steps in order. Each opens their WhatsApp chat with the message already typed; you press send. This page is only for the two of you.</p>
+  <p class="sub">Fill in one guest, then tap the steps in order. Each opens their chat with the message already typed; you press send. This page is only for the two of you.</p>
+
+  <span class="lab" id="viaL">Send with</span>
+  <div class="seg" id="via" role="group" aria-labelledby="viaL"><button type="button" class="on" data-v="wa" aria-pressed="true">WhatsApp</button><button type="button" data-v="im" aria-pressed="false">iMessage</button></div>
 
   <label for="nm">Guest's name (optional)</label>
   <input id="nm" type="text" autocomplete="off" autocapitalize="words" maxlength="40" placeholder="Arjun and family">
   <p class="hint">Shown on the wedding invitation as "Dear …,". Leave empty for "Dear friend,".</p>
 
-  <label for="tel">WhatsApp number</label>
+  <label for="tel" id="telL">WhatsApp number</label>
   <div class="ph">
     <div class="cc" role="group" aria-label="Country code"><button type="button" class="on" data-cc="91" aria-pressed="true">+91</button><button type="button" data-cc="1" aria-pressed="false">+1</button></div>
     <input id="tel" type="tel" inputmode="tel" autocomplete="off" placeholder="98765 43210">
@@ -59,14 +62,14 @@ summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
   <p class="hint" id="telh"></p>
 
   <span class="lab" id="whichl">Invite them to</span>
-  <div class="seg" role="group" aria-labelledby="whichl"><button type="button" class="on" data-w="both" aria-pressed="true">Sangeet and wedding</button><button type="button" data-w="wed" aria-pressed="false">Wedding only</button></div>
+  <div class="seg" id="which" role="group" aria-labelledby="whichl"><button type="button" class="on" data-w="both" aria-pressed="true">Sangeet and wedding</button><button type="button" data-w="wed" aria-pressed="false">Wedding only</button></div>
 
   <div class="steps">
     <a class="step" id="s1" target="_blank" rel="noopener" href="#"><b>1</b><div><span>Send the note</span><small id="s1t"></small></div></a>
     <a class="step" id="s2" target="_blank" rel="noopener" href="#"><b>2</b><div><span>Send the Sangeet invitation</span><small id="s2t"></small></div></a>
     <a class="step" id="s3" target="_blank" rel="noopener" href="#"><b>3</b><div><span>Send the wedding invitation</span><small id="s3t"></small></div></a>
   </div>
-  <p class="tip">In WhatsApp, wait a few seconds for the picture card to appear above the message box before you press send. Then come back here for the next step.</p>
+  <p class="tip" id="tip"></p>
 
   <div class="row">
     <button class="btn" id="next" type="button">Next guest</button>
@@ -89,7 +92,7 @@ summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
 <script>
 (function(){
   function $(i){return document.getElementById(i)}
-  var nm=$('nm'), tel=$('tel'), telh=$('telh'), base=$('base'), sg=$('sg'), msgB=$('msgB'), msgW=$('msgW'), ok=$('ok'), s=[$('s1'),$('s2'),$('s3')], cc='91', which='both', b='';
+  var nm=$('nm'), tel=$('tel'), telh=$('telh'), base=$('base'), sg=$('sg'), msgB=$('msgB'), msgW=$('msgW'), ok=$('ok'), s=[$('s1'),$('s2'),$('s3')], cc='91', which='both', via='wa', b='';
   try{ b=new URL('./',location.href).href.split('?')[0].split('#')[0]; }catch(e){ b=''; }
   if(!/^https?:/.test(b)) b='https://daniyakashif.github.io/wedding/';
   base.value=b;
@@ -101,17 +104,23 @@ summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
     if(d.length>10) return d;            /* already has a country code */
     return ''; }
   function wedLink(){ var n=nm.value.replace(/[<>]/g,'').trim(), u=base.value.trim(); return n?u+(u.indexOf('?')<0?'?':'&')+'to='+encodeURIComponent(n):u; }
-  function wa(num,text){ return 'https://wa.me/'+num+'?text='+encodeURIComponent(text); }
+  /* WhatsApp opens a chat by number; Messages takes sms: with the text in body (the ?& form works on iPhone, Mac and Android) */
+  function wa(num,text){ return via==='im'?'sms:+'+num+'?&body='+encodeURIComponent(text):'https://wa.me/'+num+'?text='+encodeURIComponent(text); }
   function show(){ var num=number(), both=which==='both', note=(both?msgB:msgW).value.trim(), wl=wedLink(), sl=sg.value.trim();
     s[1].hidden=!both; s[2].querySelector('b').textContent=both?'3':'2';
     $('s1t').textContent=note; $('s2t').textContent=sl; $('s3t').textContent=wl;
-    var has=!!num; s.forEach(function(a){ a.classList.toggle('off',!has); });
-    telh.className='hint'+(tel.value.trim()&&!has?' bad':''); telh.textContent=has?'Will open the chat for +'+num:(tel.value.trim()?'That number looks too short.':'10 digits is enough; the code on the left is added for you.');
+    var has=!!num; s.forEach(function(a){ a.classList.toggle('off',!has); if(via==='im'){ a.removeAttribute('target'); } else a.setAttribute('target','_blank'); });
+    $('telL').textContent=via==='im'?'Phone number':'WhatsApp number';
+    $('tip').textContent=via==='im'?'Each step opens Messages with the text typed. Add a line of your own if you like, press send, then come back here for the next step. The picture card shows once the link has been sent.':'In WhatsApp, wait a few seconds for the picture card to appear above the message box before you press send. Then come back here for the next step.';
+    telh.className='hint'+(tel.value.trim()&&!has?' bad':''); telh.textContent=has?'Will open '+(via==='im'?'Messages':'the chat')+' for +'+num:(tel.value.trim()?'That number looks too short.':'10 digits is enough; the code on the left is added for you.');
     s[0].href=has?wa(num,note):'#'; s[1].href=has?wa(num,sl):'#'; s[2].href=has?wa(num,wl):'#'; }
   function reset(){ s.forEach(function(a){ a.classList.remove('sent'); }); ok.textContent=''; }
   [nm,tel,base,sg,msgB,msgW].forEach(function(el){ el.addEventListener('input',function(){ if(el===nm||el===tel) reset(); show(); }); });
   [].forEach.call(document.querySelectorAll('.cc button'),function(bt){ bt.addEventListener('click',function(){ cc=bt.getAttribute('data-cc'); [].forEach.call(document.querySelectorAll('.cc button'),function(o){ o.classList.toggle('on',o===bt); o.setAttribute('aria-pressed',o===bt?'true':'false'); }); show(); }); });
-  [].forEach.call(document.querySelectorAll('.seg button'),function(bt){ bt.addEventListener('click',function(){ which=bt.getAttribute('data-w'); [].forEach.call(document.querySelectorAll('.seg button'),function(o){ o.classList.toggle('on',o===bt); o.setAttribute('aria-pressed',o===bt?'true':'false'); }); reset(); show(); }); });
+  [].forEach.call(document.querySelectorAll('#which button'),function(bt){ bt.addEventListener('click',function(){ which=bt.getAttribute('data-w'); [].forEach.call(document.querySelectorAll('#which button'),function(o){ o.classList.toggle('on',o===bt); o.setAttribute('aria-pressed',o===bt?'true':'false'); }); reset(); show(); }); });
+  function setCC(v){ cc=v; [].forEach.call(document.querySelectorAll('.cc button'),function(o){ var on=o.getAttribute('data-cc')===v; o.classList.toggle('on',on); o.setAttribute('aria-pressed',on?'true':'false'); }); }
+  [].forEach.call(document.querySelectorAll('#via button'),function(bt){ bt.addEventListener('click',function(){ via=bt.getAttribute('data-v'); [].forEach.call(document.querySelectorAll('#via button'),function(o){ o.classList.toggle('on',o===bt); o.setAttribute('aria-pressed',o===bt?'true':'false'); });
+    setCC(via==='im'?'1':'91'); reset(); show(); }); });
   s.forEach(function(a){ a.addEventListener('click',function(e){ if(!number()){ e.preventDefault(); return; } a.classList.add('sent'); }); });
   $('next').addEventListener('click',function(){ nm.value=''; tel.value=''; reset(); show(); nm.focus(); window.scrollTo(0,0); });
   $('copy').addEventListener('click',function(){ var l=wedLink();

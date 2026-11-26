@@ -167,12 +167,12 @@ button{-webkit-tap-highlight-color:transparent}
 .mtip span{display:block;font-weight:700;text-transform:uppercase}
 /* the night line sits up in the dark sky, left of the moon */
 #mtipN{left:3%;right:33%;top:8.6%}
-#mtipN b{font-size:min(33px,8.5vw);color:#ffe9a8;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(4,6,20,.95),0 0 14px rgba(4,6,20,.75)}
-#mtipN span{font-size:min(11px,2.9vw);letter-spacing:.2em;padding-left:.2em;margin-top:8px;color:#fff6dc;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(4,6,20,.95)}
+#mtipN b{font-size:min(33px,8.5vw);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(4,6,20,.95),0 0 12px rgba(4,6,20,.7),0 0 20px rgba(196,210,255,.5)}
+#mtipN span{font-size:min(11px,2.9vw);letter-spacing:.2em;padding-left:.2em;margin-top:8px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(4,6,20,.95)}
 /* the morning line lies on the pale footpath */
 #mtipD{left:14%;right:14%;top:64%;opacity:0}
-#mtipD b{font-size:min(40px,10.2vw);color:#e63d31;text-shadow:0 0 3px #fffaf0,0 0 8px rgba(255,250,240,.9)}
-#mtipD span{font-size:12.5px;letter-spacing:.24em;padding-left:.24em;margin-top:10px;color:#c9342a;text-shadow:0 0 3px #fffaf0,0 0 7px rgba(255,250,240,.9)}
+#mtipD b{font-size:min(40px,10.2vw);color:#141210;text-shadow:0 0 3px #f6dc96,0 0 7px rgba(240,206,120,.95),0 0 14px rgba(232,192,96,.7)}
+#mtipD span{font-size:12.5px;letter-spacing:.24em;padding-left:.24em;margin-top:10px;color:#141210;text-shadow:0 0 3px #f6dc96,0 0 7px rgba(240,206,120,.95)}
 
 /* last card */
 .flow .s-end{padding-top:4vh;padding-bottom:9vh}
@@ -420,7 +420,7 @@ button{-webkit-tap-highlight-color:transparent}
   function lockAt(py){ locked=true; lockY=Math.round(py); window.scrollTo(0,lockY); document.addEventListener('touchmove',stop,{passive:false}); document.addEventListener('wheel',stop,{passive:false});
     act(); clearInterval(lockT); lockT=setInterval(function(){ if(moonDone||!locked){ clearInterval(lockT); return; } if(held){ act(); return; } if(performance.now()-lastAct>=8000){ clearInterval(lockT); moonTo(1); } },250); }
   function moonSet(){ if(moonDone) return; moonDone=true; held=false; moon.classList.remove('held'); mDrag=1; unlock(); apply(); }
-  var stops=[].slice.call(document.querySelectorAll('.card.nk,.card.wl')), armed=stops.map(function(){ return true; }), restT=0, touching=false, settling=0;
+  var stops=[].slice.call(document.querySelectorAll('.note,.card.nk,.card.wl')), armed=stops.map(function(){ return true; }), restT=0, touching=false, settling=0;
   document.addEventListener('touchstart',function(){ touching=true; clearTimeout(restT); },{passive:true});
   ['touchend','touchcancel'].forEach(function(ev){ document.addEventListener(ev,function(){ touching=false; clearTimeout(restT); restT=setTimeout(rest,180); },{passive:true}); });
   function rest(){ if(touching||locked||!ready||RM) return; var y=window.pageYOffset||0;
@@ -497,7 +497,7 @@ button{-webkit-tap-highlight-color:transparent}
     try{ walk.pause(); walk.currentTime=0; walk.playbackRate=1; }catch(e){}
     fade('pair',1500);   /* we fade into the lit garden, standing */
     setTimeout(function(){ var p; try{ p=walk.play(); }catch(e){} if(p&&p.catch) p.catch(function(){}); },1650);   /* then the one step */
-    setTimeout(function(){ fade('who',1200); writeNames(); },3150); setTimeout(finish,4600); }
+    setTimeout(function(){ fade('who',1300); writeNames(); },1650); setTimeout(finish,3300); }
 
   /* ----- the bow: the film follows the finger, and loosens back if you let go ----- */
   var T0=.2, T1=1.42, TEND=3.62, prog=0, drag=false, sy=0, mv=0, animId=0, vOK=false, want=-1, playing=false, endT=0;

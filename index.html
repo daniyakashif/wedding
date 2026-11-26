@@ -133,6 +133,8 @@ button{-webkit-tap-highlight-color:transparent}
 
 /* the heart you scratch */
 .heart{position:relative;width:min(66vw,250px);aspect-ratio:100/92;margin:12px auto 0}
+.rise.in .heart:not(.done){animation:beat 2.2s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.045)}24%{transform:scale(1)}36%{transform:scale(1.03)}48%{transform:scale(1)}}
 .heart svg.hb{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.28))}
 .heart .in{position:absolute;left:14%;right:14%;top:21%;text-align:center;color:var(--ink)}
 .heart .in small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.3em;padding-left:.3em;text-transform:uppercase;color:var(--soft)}
@@ -160,15 +162,17 @@ button{-webkit-tap-highlight-color:transparent}
 
 /* the stretch where night becomes day */
 .flow .s-moon{height:105vh;height:105svh;padding:0}
-.mtip{position:absolute;left:5%;right:5%;top:43%;text-align:center;will-change:opacity;pointer-events:none}
-/* no shade behind the words: the contrast is an edge hugging each letter, so the garden stays clean */
-.mtip b{display:block;font-family:var(--script);font-weight:400;font-size:min(52px,13.4vw);line-height:1.1;color:#ffe08a;
-  -webkit-text-stroke:2.2px #24180a;paint-order:stroke fill;text-shadow:0 0 5px rgba(10,6,0,.95),0 0 11px rgba(10,6,0,.7),0 2px 3px rgba(0,0,0,.6)}
-.mtip span{display:block;font-size:14.5px;font-weight:700;letter-spacing:.24em;padding-left:.24em;text-transform:uppercase;margin-top:12px;color:#fff6dc;
-  -webkit-text-stroke:2px #24180a;paint-order:stroke fill;text-shadow:0 0 5px rgba(10,6,0,.95),0 0 9px rgba(10,6,0,.6)}
-.mtip.dayt{opacity:0}
-.mtip.dayt b{color:#ee4034;-webkit-text-stroke:2.6px #fffdf6;text-shadow:0 0 5px #fffdf6,0 0 10px rgba(255,253,246,.85)}
-.mtip.dayt span{color:#cf3229;-webkit-text-stroke:2.2px #fffdf6;text-shadow:0 0 5px #fffdf6,0 0 9px rgba(255,253,246,.8)}
+.mtip{position:absolute;text-align:center;will-change:opacity;pointer-events:none}
+.mtip b{display:block;font-family:var(--script);font-weight:400;line-height:1.12}
+.mtip span{display:block;font-weight:700;text-transform:uppercase}
+/* the night line sits up in the dark sky, left of the moon */
+#mtipN{left:3%;right:33%;top:8.6%}
+#mtipN b{font-size:min(33px,8.5vw);color:#ffe9a8;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(4,6,20,.95),0 0 14px rgba(4,6,20,.75)}
+#mtipN span{font-size:min(11px,2.9vw);letter-spacing:.2em;padding-left:.2em;margin-top:8px;color:#fff6dc;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(4,6,20,.95)}
+/* the morning line lies on the pale footpath */
+#mtipD{left:14%;right:14%;top:64%;opacity:0}
+#mtipD b{font-size:min(40px,10.2vw);color:#e63d31;text-shadow:0 0 3px #fffaf0,0 0 8px rgba(255,250,240,.9)}
+#mtipD span{font-size:12.5px;letter-spacing:.24em;padding-left:.24em;margin-top:10px;color:#c9342a;text-shadow:0 0 3px #fffaf0,0 0 7px rgba(255,250,240,.9)}
 
 /* last card */
 .flow .s-end{padding-top:4vh;padding-bottom:9vh}
@@ -212,7 +216,7 @@ button{-webkit-tap-highlight-color:transparent}
   background:radial-gradient(ellipse 22% 60% at 50% 55%,rgba(255,226,160,.8),rgba(255,196,110,.22) 45%,rgba(255,190,100,0) 75%)}
 
 @media (max-width:340px){.btn{font-size:11.5px;letter-spacing:.14em}.card h2{font-size:52px}.note h3{font-size:38px}.note p{font-size:18.5px}.clock b{font-size:31px}}
-@media (prefers-reduced-motion:reduce){.foil,.hint,.cue svg,.lamps i,.moon i{animation:none}.rise{transition:none}}
+@media (prefers-reduced-motion:reduce){.rise.in .heart:not(.done){animation:none}.foil,.hint,.cue svg,.lamps i,.moon i{animation:none}.rise{transition:none}}
 </style>
 </head>
 <body class="locked">
@@ -396,7 +400,7 @@ button{-webkit-tap-highlight-color:transparent}
     D=moonDone?arrived:Math.max(sd,sm(.15,1,mDrag)); Z=D;
     day.style.opacity=D.toFixed(3); archD.style.opacity=D.toFixed(3); floorD.style.opacity=D.toFixed(3); sun.style.opacity=(D*.9).toFixed(3);
     moon.style.transform='translate3d('+(-mv*BW*.05).toFixed(1)+'px,'+(mv*BH*.3).toFixed(1)+'px,0)'; moon.style.opacity=(1-sm(.55,1,mv)).toFixed(3);
-    var live=held||(ready&&!moonDone&&r.top<VH*.14&&r.bottom>VH*.45&&mv<.98); if(live!==moonLive){ moonLive=live; moon.classList.toggle('live',live); }
+    var live=held||(ready&&!moonDone&&locked&&Math.abs(r.top)<3&&mv<.98); if(live!==moonLive){ moonLive=live; moon.classList.toggle('live',live); }
     var near=sm(.02,.3,cl((VH-r.top)/VH))*(1-sm(.7,1,cl((VH*.2-r.top)/VH)));
     mtipN.style.opacity=(near*(1-sm(.1,.6,D))).toFixed(3); mtipD.style.opacity=(near*sm(.6,1,D)).toFixed(3);
     var P=cl((y-VH*.6)/Math.max(1,docH-VH*.6)); garden.style.transform='scale('+(1+.17*P).toFixed(4)+')'; arch.style.transform='scale('+(1+.03*P).toFixed(4)+')';
@@ -410,11 +414,20 @@ button{-webkit-tap-highlight-color:transparent}
   function stop(e){ if(!locked||moonDone||!e.cancelable) return;
     if(e.type==='wheel'){ if(e.deltaY>0) e.preventDefault(); return; }
     if(e.touches&&e.touches[0]&&e.touches[0].clientY<tY-2) e.preventDefault(); }   /* finger moving up = page going down */
-  function unlock(){ locked=false; clearTimeout(lockT); document.removeEventListener('touchmove',stop); document.removeEventListener('wheel',stop); }
+  var lastAct=0; function act(){ lastAct=performance.now(); }
+  ['touchstart','touchmove','touchend','pointerdown','wheel','keydown'].forEach(function(ev){ document.addEventListener(ev,act,{passive:true,capture:true}); });
+  function unlock(){ locked=false; clearInterval(lockT); document.removeEventListener('touchmove',stop); document.removeEventListener('wheel',stop); apply(); }
   function lockAt(py){ locked=true; lockY=Math.round(py); window.scrollTo(0,lockY); document.addEventListener('touchmove',stop,{passive:false}); document.addEventListener('wheel',stop,{passive:false});
-    clearTimeout(lockT); lockT=setTimeout(function auto(){ if(moonDone||!locked) return; if(held){ lockT=setTimeout(auto,1500); return; } moonTo(1); },8000); }
+    act(); clearInterval(lockT); lockT=setInterval(function(){ if(moonDone||!locked){ clearInterval(lockT); return; } if(held){ act(); return; } if(performance.now()-lastAct>=8000){ clearInterval(lockT); moonTo(1); } },250); }
   function moonSet(){ if(moonDone) return; moonDone=true; held=false; moon.classList.remove('held'); mDrag=1; unlock(); apply(); }
-  function onScroll(){ if(locked){ var sy=window.pageYOffset||0; if(sy>lockY+1) window.scrollTo(0,lockY); else if(sy<lockY-24&&!held) unlock(); } if(sTick) return; sTick=true; requestAnimationFrame(function(){ sTick=false; apply(); }); }
+  var stops=[].slice.call(document.querySelectorAll('.card.nk,.card.wl')), armed=stops.map(function(){ return true; }), restT=0, touching=false, settling=0;
+  document.addEventListener('touchstart',function(){ touching=true; clearTimeout(restT); },{passive:true});
+  ['touchend','touchcancel'].forEach(function(ev){ document.addEventListener(ev,function(){ touching=false; clearTimeout(restT); restT=setTimeout(rest,180); },{passive:true}); });
+  function rest(){ if(touching||locked||!ready||RM) return; var y=window.pageYOffset||0;
+    stops.forEach(function(el,k){ var r=el.getBoundingClientRect(), target=Math.round(r.height>VH-24?y+r.top-12:y+r.top+r.height/2-VH/2), d=target-y;
+      if(Math.abs(d)<VH*.26){ if(armed[k]&&Math.abs(d)>3){ armed[k]=false; settling=performance.now(); try{ window.scrollTo({top:target,behavior:'smooth'}); }catch(e){ window.scrollTo(0,target); } } else if(Math.abs(d)<=3) armed[k]=false; }
+      else if(Math.abs(d)>VH*.45) armed[k]=true; }); }
+  function onScroll(){ clearTimeout(restT); restT=setTimeout(rest,170); if(locked){ var sy=window.pageYOffset||0; if(sy>lockY+1){ window.scrollTo(0,lockY); act(); } else if(sy<lockY-24&&!held) unlock(); } if(sTick) return; sTick=true; requestAnimationFrame(function(){ sTick=false; apply(); }); }
   window.addEventListener('scroll',onScroll,{passive:true});
 
   /* ----- pulling the moon down ----- */
